@@ -1,0 +1,103 @@
+{
+  "id": "openclaw-channel",
+  "name": "OpenIM Channel",
+  "version": "0.1.0",
+  "description": "OpenIM protocol channel for OpenClaw",
+  "author": "openclaw-openim",
+  "channels": [
+    "openim"
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "userID": {
+        "type": "string",
+        "description": "OpenIM userID (single-account fallback)"
+      },
+      "token": {
+        "type": "string",
+        "description": "OpenIM token (single-account fallback)"
+      },
+      "wsAddr": {
+        "type": "string",
+        "description": "OpenIM WebSocket endpoint, e.g. ws://127.0.0.1:10001"
+      },
+      "apiAddr": {
+        "type": "string",
+        "description": "OpenIM API endpoint, e.g. http://127.0.0.1:10002"
+      },
+      "platformID": {
+        "type": "number",
+        "default": 5,
+        "description": "Platform ID, default 5 (Web)"
+      },
+      "requireMention": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether replies in groups require mentioning the current account"
+      },
+      "accounts": {
+        "type": "object",
+        "description": "Multi-account configuration keyed by accountId",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "userID": {
+              "type": "string"
+            },
+            "token": {
+              "type": "string"
+            },
+            "wsAddr": {
+              "type": "string"
+            },
+            "apiAddr": {
+              "type": "string"
+            },
+            "platformID": {
+              "type": "number",
+              "default": 5
+            },
+            "requireMention": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "uiHints": {
+    "token": {
+      "label": "Token",
+      "sensitive": true
+    },
+    "userID": {
+      "label": "User ID"
+    },
+    "wsAddr": {
+      "label": "WebSocket Endpoint",
+      "placeholder": "ws://127.0.0.1:10001"
+    },
+    "apiAddr": {
+      "label": "API Endpoint",
+      "placeholder": "http://127.0.0.1:10002"
+    },
+    "platformID": {
+      "label": "Platform ID"
+    },
+    "requireMention": {
+      "label": "Require Mention in Group"
+    }
+  }
+}

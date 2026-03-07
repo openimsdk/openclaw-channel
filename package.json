@@ -1,0 +1,62 @@
+{
+  "name": "@openim/openclaw-channel",
+  "version": "0.1.0",
+  "description": "OpenIM channel plugin for OpenClaw gateway",
+  "license": "AGPL-3.0-only",
+  "author": "openclaw-openim",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "files": [
+    "dist",
+    "openclaw.plugin.json",
+    "README.md",
+    "README.zh-CN.md"
+  ],
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ],
+    "channel": {
+      "id": "openim",
+      "label": "OpenIM",
+      "selectionLabel": "OpenIM",
+      "docsPath": "/channels/openim",
+      "blurb": "OpenIM protocol channel via @openim/client-sdk",
+      "order": 86,
+      "aliases": [
+        "openim",
+        "im"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test:connect": "tsx scripts/test-connect.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.0.0",
+    "@openim/client-sdk": "^3.8.3"
+  },
+  "peerDependencies": {
+    "clawdbot": "*",
+    "openclaw": "*"
+  },
+  "peerDependenciesMeta": {
+    "clawdbot": {
+      "optional": true
+    },
+    "openclaw": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
