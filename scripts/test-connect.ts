@@ -28,14 +28,57 @@ function loadEnv(): void {
 
 loadEnv();
 
-const userID = String(process.env.OPENIM_USER_ID ?? "").trim();
 const token = String(process.env.OPENIM_TOKEN ?? "").trim();
 const wsAddr = String(process.env.OPENIM_WS_ADDR ?? "").trim();
 const apiAddr = String(process.env.OPENIM_API_ADDR ?? "").trim();
-const platformID = parseInt(String(process.env.OPENIM_PLATFORM_ID ?? "5"), 10);
+if (!token || !wsAddr || !apiAddr) {
+  console.error("[OpenIM Test] Missing configuration. Set OPENIM_TOKEN / OPENIM_WS_ADDR / OPENIM_API_ADDR");
+  process.exit(1);
+}
 
-if (!userID || !token || !wsAddr || !apiAddr || !Number.isFinite(platformID)) {
-  console.error("[OpenIM Test] Missing configuration. Set OPENIM_USER_ID / OPENIM_TOKEN / OPENIM_WS_ADDR / OPENIM_API_ADDR / OPENIM_PLATFORM_ID");
+function toFiniteNumber(value: unknown, fallback: number): number {
+  const n = typeof value === "number" ? value : parseInt(String(value ?? ""), 10);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function decodeJwtPayload(input: string): Record<string, unknown> | null {
+  const parts = input.split(".");
+  if (parts.length < 2) return null;
+  const payload = parts[1];
+  if (!payload) return null;
+
+  try {
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    const json = Buffer.from(padded, "base64").toString("utf8");
+    const parsed = JSON.parse(json);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
+}
+
+function extractHintsFromToken(input: string): { userID?: string; platformID?: number } {
+  const payload = decodeJwtPayload(input);
+  if (!payload) return {};
+
+  const userIDRaw = payload.UserID ?? payload.userID;
+  const userID = String(userIDRaw ?? "").trim();
+  const platformRaw = payload.PlatformID ?? payload.platformID;
+  const platformID = toFiniteNumber(platformRaw, NaN);
+
+  return {
+    ...(userID ? { userID } : {}),
+    ...(Number.isFinite(platformID) ? { platformID } : {}),
+  };
+}
+
+const hints = extractHintsFromToken(token);
+const userID = String(process.env.OPENIM_USER_ID ?? hints.userID ?? "").trim();
+const platformID = toFiniteNumber(process.env.OPENIM_PLATFORM_ID ?? hints.platformID, 5);
+
+if (!userID) {
+  console.error("[OpenIM Test] Cannot resolve userID. Provide OPENIM_USER_ID or use a JWT token with UserID claim.");
   process.exit(1);
 }
 

@@ -52,12 +52,9 @@ openclaw openim setup
       "accounts": {
         "default": {
           "enabled": true,
-          "userID": "user_10001",
           "token": "your_token",
           "wsAddr": "ws://127.0.0.1:10001",
-          "apiAddr": "http://127.0.0.1:10002",
-          "platformID": 5,
-          "requireMention": true
+          "apiAddr": "http://127.0.0.1:10002"
         }
       }
     }
@@ -65,14 +62,21 @@ openclaw openim setup
 }
 ```
 
+`userID` 和 `platformID` 为可选项，未填写时会自动从 JWT token 的 `UserID` / `PlatformID` 声明解析。
+
+`requireMention` 为可选项，默认 `true`。
+
 支持单账号兜底写法（不使用 `accounts`）。
 
 `default` 账号支持环境变量兜底：
 
-- `OPENIM_USER_ID`
 - `OPENIM_TOKEN`
 - `OPENIM_WS_ADDR`
 - `OPENIM_API_ADDR`
+
+可选环境变量覆盖项：
+
+- `OPENIM_USER_ID`
 - `OPENIM_PLATFORM_ID`
 
 ## Agent 工具

@@ -116,14 +116,49 @@ function toFiniteNumber(value: unknown, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  const parts = token.split(".");
+  if (parts.length < 2) return null;
+  const payload = parts[1];
+  if (!payload) return null;
+
+  try {
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    const json = Buffer.from(padded, "base64").toString("utf8");
+    const parsed = JSON.parse(json);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
+}
+
+function extractAccountHintsFromToken(token: string): { userID?: string; platformID?: number } {
+  const payload = decodeJwtPayload(token);
+  if (!payload) return {};
+
+  const userIDRaw = payload.UserID ?? payload.userID;
+  const userID = String(userIDRaw ?? "").trim();
+
+  const platformRaw = payload.PlatformID ?? payload.platformID;
+  const platformID = toFiniteNumber(platformRaw, NaN);
+
+  return {
+    ...(userID ? { userID } : {}),
+    ...(Number.isFinite(platformID) ? { platformID } : {}),
+  };
+}
+
 function envDefaultAccount(): Record<string, unknown> | null {
-  const userID = String(process.env.OPENIM_USER_ID ?? "").trim();
   const token = String(process.env.OPENIM_TOKEN ?? "").trim();
   const wsAddr = String(process.env.OPENIM_WS_ADDR ?? "").trim();
   const apiAddr = String(process.env.OPENIM_API_ADDR ?? "").trim();
-  const platformID = toFiniteNumber(process.env.OPENIM_PLATFORM_ID, 5);
+  if (!token || !wsAddr || !apiAddr) return null;
 
-  if (!userID || !token || !wsAddr || !apiAddr) return null;
+  const hints = extractAccountHintsFromToken(token);
+  const userID = String(process.env.OPENIM_USER_ID ?? hints.userID ?? "").trim();
+  const platformID = toFiniteNumber(process.env.OPENIM_PLATFORM_ID ?? hints.platformID, 5);
+  if (!userID) return null;
 
   return {
     userID,
@@ -139,15 +174,18 @@ function envDefaultAccount(): Record<string, unknown> | null {
 function normalizeAccount(accountId: string, raw: any): OpenIMAccountConfig | null {
   if (!raw || typeof raw !== "object") return null;
 
-  const userID = String(raw.userID ?? "").trim();
   const token = String(raw.token ?? "").trim();
   const wsAddr = String(raw.wsAddr ?? "").trim();
   const apiAddr = String(raw.apiAddr ?? "").trim();
-  const platformID = toFiniteNumber(raw.platformID, 5);
+  if (!token || !wsAddr || !apiAddr) return null;
+
+  const hints = extractAccountHintsFromToken(token);
+  const userID = String(raw.userID ?? hints.userID ?? "").trim();
+  const platformID = toFiniteNumber(raw.platformID ?? hints.platformID, 5);
   const enabled = raw.enabled !== false;
   const requireMention = raw.requireMention !== false;
 
-  if (!userID || !token || !wsAddr || !apiAddr) return null;
+  if (!userID) return null;
 
   return {
     accountId,

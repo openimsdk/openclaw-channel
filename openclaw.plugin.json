@@ -15,13 +15,9 @@
         "type": "boolean",
         "default": true
       },
-      "userID": {
-        "type": "string",
-        "description": "OpenIM userID (single-account fallback)"
-      },
       "token": {
         "type": "string",
-        "description": "OpenIM token (single-account fallback)"
+        "description": "OpenIM JWT token (used to derive userID/platformID when omitted)"
       },
       "wsAddr": {
         "type": "string",
@@ -30,11 +26,6 @@
       "apiAddr": {
         "type": "string",
         "description": "OpenIM API endpoint, e.g. http://127.0.0.1:10002"
-      },
-      "platformID": {
-        "type": "number",
-        "default": 5,
-        "description": "Platform ID, default 5 (Web)"
       },
       "requireMention": {
         "type": "boolean",
@@ -52,21 +43,15 @@
               "type": "boolean",
               "default": true
             },
-            "userID": {
-              "type": "string"
-            },
             "token": {
-              "type": "string"
+              "type": "string",
+              "description": "OpenIM JWT token"
             },
             "wsAddr": {
               "type": "string"
             },
             "apiAddr": {
               "type": "string"
-            },
-            "platformID": {
-              "type": "number",
-              "default": 5
             },
             "requireMention": {
               "type": "boolean",
@@ -82,9 +67,6 @@
       "label": "Token",
       "sensitive": true
     },
-    "userID": {
-      "label": "User ID"
-    },
     "wsAddr": {
       "label": "WebSocket Endpoint",
       "placeholder": "ws://127.0.0.1:10001"
@@ -92,9 +74,6 @@
     "apiAddr": {
       "label": "API Endpoint",
       "placeholder": "http://127.0.0.1:10002"
-    },
-    "platformID": {
-      "label": "Platform ID"
     },
     "requireMention": {
       "label": "Require Mention in Group"

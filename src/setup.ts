@@ -9,7 +9,6 @@ import {
   isCancel,
   note as clackNote,
   outro as clackOutro,
-  select as clackSelect,
   text as clackText,
 } from "@clack/prompts";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -29,14 +28,6 @@ function guardCancel<T>(value: T | symbol): T {
 
 export async function runOpenIMSetup(): Promise<void> {
   clackIntro("OpenIM Channel Setup Wizard");
-
-  const userID = guardCancel(
-    await clackText({
-      message: "Enter OpenIM User ID",
-      initialValue: process.env.OPENIM_USER_ID || "",
-      placeholder: "Example: user_10001",
-    })
-  );
 
   const token = guardCancel(
     await clackText({
@@ -59,37 +50,12 @@ export async function runOpenIMSetup(): Promise<void> {
     })
   );
 
-  const platformIDStr = guardCancel(
-    await clackText({
-      message: "Enter Platform ID (default: 5 for Web)",
-      initialValue: process.env.OPENIM_PLATFORM_ID || "5",
-    })
-  );
-
-  const requireMention = guardCancel(
-    await clackSelect({
-      message: "Reply in groups only when the bot is mentioned?",
-      options: [
-        { value: true, label: "Yes (recommended)" },
-        { value: false, label: "No (trigger on all group messages)" },
-      ],
-      initialValue: true,
-    })
-  );
-
-  const platformID = parseInt(String(platformIDStr).trim(), 10);
-  if (!Number.isFinite(platformID)) {
-    console.error("Configuration field `platformID` must be a number.");
-    process.exit(1);
-  }
-
-  const trimmedUserID = String(userID).trim();
   const trimmedToken = String(token).trim();
   const trimmedWsAddr = String(wsAddr).trim();
   const trimmedApiAddr = String(apiAddr).trim();
 
-  if (!trimmedUserID || !trimmedToken || !trimmedWsAddr || !trimmedApiAddr) {
-    console.error("Configuration fields `userID`, `token`, `wsAddr`, and `apiAddr` cannot be empty.");
+  if (!trimmedToken || !trimmedWsAddr || !trimmedApiAddr) {
+    console.error("Configuration fields `token`, `wsAddr`, and `apiAddr` cannot be empty.");
     process.exit(1);
   }
 
@@ -107,14 +73,10 @@ export async function runOpenIMSetup(): Promise<void> {
   const accounts = openim.accounts || {};
 
   accounts.default = {
-    ...(accounts.default || {}),
     enabled: true,
-    userID: trimmedUserID,
     token: trimmedToken,
     wsAddr: trimmedWsAddr,
     apiAddr: trimmedApiAddr,
-    platformID,
-    requireMention: requireMention !== false,
   };
 
   channels.openim = {
@@ -128,6 +90,9 @@ export async function runOpenIMSetup(): Promise<void> {
   mkdirSync(OPENCLAW_HOME, { recursive: true });
   writeFileSync(CONFIG_PATH, JSON.stringify(next, null, 2), "utf-8");
 
-  clackNote(`Default account configuration written to: ${CONFIG_PATH}`, "Setup complete");
+  clackNote(
+    `Default account configuration written to: ${CONFIG_PATH}\nuserID/platformID are auto-derived from JWT token claims when omitted.`,
+    "Setup complete"
+  );
   clackOutro("Run `openclaw gateway restart` to load the updated configuration.");
 }
