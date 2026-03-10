@@ -2,7 +2,7 @@
 
 OpenIM channel plugin for OpenClaw Gateway.
 
-Chinese documentation: [README.zh-CN.md](./README.zh-CN.md)
+Chinese documentation: [README.zh-CN.md](https://github.com/openimsdk/openclaw-channel/blob/main/README.zh-CN.md)
 
 ## Features
 
@@ -25,8 +25,10 @@ openclaw plugins install @openim/openclaw-channel
 Or install from local path:
 
 ```bash
-openclaw plugins install /path/to/openclaw-openim
+openclaw plugins install /path/to/openclaw-channel
 ```
+
+Repository: https://github.com/openimsdk/openclaw-channel
 
 ## Identity Mapping
 
@@ -120,4 +122,4 @@ For `test:connect`, configure `.env` first (see `.env.example`).
 
 ## License
 
-AGPL-3.0-only. See [LICENSE](./LICENSE).
+AGPL-3.0-only. See [LICENSE](https://github.com/openimsdk/openclaw-channel/blob/main/LICENSE).

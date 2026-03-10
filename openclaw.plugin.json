@@ -1,7 +1,7 @@
 {
   "id": "openclaw-channel",
   "name": "OpenIM Channel",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "OpenIM protocol channel for OpenClaw",
   "author": "openclaw-openim",
   "channels": [

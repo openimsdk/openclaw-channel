@@ -2,7 +2,7 @@
 
 OpenClaw Gateway 的 OpenIM 渠道插件。
 
-English documentation: [README.md](./README.md)
+English documentation: [README.md](https://github.com/openimsdk/openclaw-channel/blob/main/README.md)
 
 ## 功能
 
@@ -25,8 +25,10 @@ openclaw plugins install @openim/openclaw-channel
 本地路径安装：
 
 ```bash
-openclaw plugins install /path/to/openclaw-openim
+openclaw plugins install /path/to/openclaw-channel
 ```
+
+仓库地址：https://github.com/openimsdk/openclaw-channel
 
 ## 标识说明
 
@@ -119,4 +121,4 @@ pnpm run test:connect
 
 ## 许可证
 
-本项目采用 `AGPL-3.0-only` 许可证。详见 [LICENSE](./LICENSE)。
+本项目采用 `AGPL-3.0-only` 许可证。详见 [LICENSE](https://github.com/openimsdk/openclaw-channel/blob/main/LICENSE)。

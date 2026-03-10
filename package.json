@@ -1,9 +1,17 @@
 {
   "name": "@openim/openclaw-channel",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "OpenIM channel plugin for OpenClaw gateway",
   "license": "AGPL-3.0-only",
   "author": "blooming",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openimsdk/openclaw-channel.git"
+  },
+  "homepage": "https://github.com/openimsdk/openclaw-channel#readme",
+  "bugs": {
+    "url": "https://github.com/openimsdk/openclaw-channel/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
