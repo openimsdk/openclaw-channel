@@ -67,6 +67,16 @@ function envDefaultAccount(): Record<string, unknown> | null {
   };
 }
 
+function normalizeInboundWhitelist(raw: unknown): string[] {
+  const values = Array.isArray(raw)
+    ? raw
+    : typeof raw === "string"
+      ? raw.split(",")
+      : [];
+  const normalized = values.map((item) => String(item ?? "").trim()).filter(Boolean);
+  return Array.from(new Set(normalized));
+}
+
 function normalizeAccount(accountId: string, raw: any): OpenIMAccountConfig | null {
   if (!raw || typeof raw !== "object") return null;
 
@@ -80,6 +90,7 @@ function normalizeAccount(accountId: string, raw: any): OpenIMAccountConfig | nu
   const platformID = toFiniteNumber(raw.platformID ?? hints.platformID, 5);
   const enabled = raw.enabled !== false;
   const requireMention = raw.requireMention !== false;
+  const inboundWhitelist = normalizeInboundWhitelist(raw.inboundWhitelist);
 
   if (!userID) return null;
 
@@ -92,6 +103,7 @@ function normalizeAccount(accountId: string, raw: any): OpenIMAccountConfig | nu
     apiAddr,
     platformID,
     requireMention,
+    inboundWhitelist,
   };
 }
 

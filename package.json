@@ -1,9 +1,9 @@
 {
   "name": "@openim/openclaw-channel",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "OpenIM channel plugin for OpenClaw gateway",
   "license": "AGPL-3.0-only",
-  "author": "openclaw-openim",
+  "author": "blooming",
   "type": "module",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",

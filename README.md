@@ -66,6 +66,11 @@ openclaw openim setup
 
 `requireMention` is optional and defaults to `true`.
 
+`inboundWhitelist` is optional. If omitted or empty, inbound handling keeps existing behavior.
+If set, only these users can trigger processing:
+- direct messages to the account
+- group messages where they `@` the account
+
 Single-account fallback (without `accounts`) is supported.
 
 Environment fallback is supported for the `default` account:

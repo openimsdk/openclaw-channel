@@ -1,7 +1,7 @@
 {
   "id": "openclaw-channel",
   "name": "OpenIM Channel",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "OpenIM protocol channel for OpenClaw",
   "author": "openclaw-openim",
   "channels": [
@@ -32,6 +32,14 @@
         "default": true,
         "description": "Whether replies in groups require mentioning the current account"
       },
+      "inboundWhitelist": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "default": [],
+        "description": "Optional sender whitelist. When set, only direct messages from listed users or their @mentions in groups are processed."
+      },
       "accounts": {
         "type": "object",
         "description": "Multi-account configuration keyed by accountId",
@@ -56,6 +64,13 @@
             "requireMention": {
               "type": "boolean",
               "default": true
+            },
+            "inboundWhitelist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
             }
           }
         }
@@ -77,6 +92,9 @@
     },
     "requireMention": {
       "label": "Require Mention in Group"
+    },
+    "inboundWhitelist": {
+      "label": "Inbound Sender Whitelist"
     }
   }
 }

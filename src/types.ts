@@ -11,6 +11,7 @@ export interface OpenIMAccountConfig {
   apiAddr: string;
   platformID: number;
   requireMention: boolean;
+  inboundWhitelist: string[];
 }
 
 export interface OpenIMClientState {

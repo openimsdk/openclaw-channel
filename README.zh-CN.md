@@ -66,6 +66,10 @@ openclaw openim setup
 
 `requireMention` 为可选项，默认 `true`。
 
+`inboundWhitelist` 为可选项，不填或为空时保持当前逻辑；填了后仅处理白名单用户触发的消息：
+- 给账号发单聊消息
+- 在群里 @ 账号的消息
+
 支持单账号兜底写法（不使用 `accounts`）。
 
 `default` 账号支持环境变量兜底：

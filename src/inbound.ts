@@ -91,6 +91,14 @@ function isMentionedInGroup(msg: MessageItem, selfUserID: string): boolean {
   return list.some((item) => String(item) === id);
 }
 
+function isWhitelistedSender(client: OpenIMClientState, msg: MessageItem): boolean {
+  const whitelist = client.config.inboundWhitelist;
+  if (!Array.isArray(whitelist) || whitelist.length === 0) return true;
+  const senderId = String(msg.sendID || "").trim();
+  if (!senderId) return false;
+  return whitelist.some((id) => id === senderId);
+}
+
 async function sendReplyFromInbound(client: OpenIMClientState, msg: MessageItem, text: string): Promise<void> {
   const isGroup = isGroupMessage(msg);
   const target: ParsedTarget = isGroup ? { kind: "group", id: String(msg.groupID) } : { kind: "user", id: String(msg.sendID) };
@@ -120,7 +128,12 @@ export async function processInboundMessage(api: any, client: OpenIMClientState,
   }
 
   const group = isGroupMessage(msg);
-  if (group && client.config.requireMention && !isMentionedInGroup(msg, client.config.userID)) {
+  const mentioned = group && isMentionedInGroup(msg, client.config.userID);
+  const hasWhitelist = client.config.inboundWhitelist.length > 0;
+  if (hasWhitelist) {
+    if (!isWhitelistedSender(client, msg)) return;
+    if (group && !mentioned) return;
+  } else if (group && client.config.requireMention && !mentioned) {
     return;
   }
 
